@@ -1,0 +1,272 @@
+{
+	"info": {
+		"_postman_id": "e9de18ed-37ef-4576-b6cd-d0f23286e2fe",
+		"name": "Coll1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create wallet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "50cfdcaf-3057-4483-bff6-5e2093f52649",
+						"exec": [
+							"let responseJson;\r",
+							"pm.test(\"Check status\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response contained wallet_id\", function(){\r",
+							"    responseJson = pm.response.json();\r",
+							"   pm.expect(responseJson).to.have.property('wallet_id')\r",
+							"});\r",
+							"pm.test(\"Wallet_id include currency name\", function(){\r",
+							"   pm.expect(pm.response.json().wallet_id).to.include(\"BTC\")\r",
+							"});\r",
+							"pm.test(\"Wallet length is <=53\", function(){\r",
+							"   pm.expect(pm.response.json().wallet_id).to.have.lengthOf(53)\r",
+							"});\r",
+							"pm.environment.set(\"wallet_id\", responseJson.wallet_id);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6ee34d0f-a03b-4fc3-a4bb-65e90d7db9c2",
+						"exec": [
+							"pm.collectionVariables.set(\"btc\"),pm.collectionVariables.get(\"currency1\"+\"currency\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}create/wallet",
+					"host": [
+						"{{host}}create"
+					],
+					"path": [
+						"wallet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create adress",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ee7d2eb2-a315-4c08-8250-74d5d0862d2d",
+						"exec": [
+							"pm.test(\"response must be valid and have a body\", function () {\r",
+							"     pm.response.to.be.ok;\r",
+							"     pm.response.to.be.withBody;\r",
+							"     pm.response.to.be.json;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"wallet_id\": \"BTCvLHroHdxgojBVBWjFCv94bGJ3k2dxcZZrs2fcX2r4q6jsXvWYF\",\r\n    \"wallet_id_hash\": \"fcbb126bb2a6ad3c28ec9ebac905b86ecb82991868cde83c807d3a24d37632d8\",\r\n    \"currency\": \"tBTC\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}create/wallet/payment/address",
+					"host": [
+						"{{host}}create"
+					],
+					"path": [
+						"wallet",
+						"payment",
+						"address"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "wallet state",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c224c4cd-20d2-4faf-8c88-2475fc21826a",
+						"exec": [
+							"pm.test(\"Content-Type header is present\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}wallet/state/{{wallet_id}}",
+					"host": [
+						"{{host}}wallet"
+					],
+					"path": [
+						"state",
+						"{{wallet_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transactions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8a3a0ce2-a25c-4822-8201-73a45b469181",
+						"exec": [
+							"pm.test(\"Response time is less than 200ms\", () => {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/wallet/transactions/{{wallet_id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"wallet",
+						"transactions",
+						"{{wallet_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "daily/statistic/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9e7907a9-d47e-4bbf-8408-f59ac53c1182",
+						"exec": [
+							"pm.test(\"Check the active environment\", () => {\r",
+							"  pm.expect(pm.environment.name).to.eql(\"BTC\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/wallet/daily/statistic/{{wallet_id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"wallet",
+						"daily",
+						"statistic",
+						"{{wallet_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "send payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "96c4ca60-1b46-41cd-92ea-bc3e347d77a4",
+						"exec": [
+							"pm.test(\"Successful POST request\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([403,404]);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/wallet/send/payment/{{wallet_id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"wallet",
+						"send",
+						"payment",
+						"{{wallet_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"id": "6974c627-92f3-4e7c-9343-e2e06028362d",
+			"key": "currency",
+			"value": ""
+		},
+		{
+			"id": "315a7baa-baf1-4a87-b863-cbca4625dac9",
+			"key": "btc",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}
